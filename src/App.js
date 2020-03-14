@@ -12,6 +12,7 @@ import TableRow from '@material-ui/core/TableRow';
 import Checkbox from '@material-ui/core/Checkbox';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
 import Paper from '@material-ui/core/Paper';
+import EnhancedTableHead from './components/EnhancedTableHead';
 
 const useStyles = makeStyles({
   table: {
@@ -20,15 +21,6 @@ const useStyles = makeStyles({
   },
 });
 
-const headCells = [
-  { id: 'id', numeric: false, disablePadding: true, label: 'ID' },
-  { id: 'name', numeric: true, disablePadding: false, label: 'Name' },
-  { id: 'email', numeric: true, disablePadding: false, label: 'Email' },
-  { id: 'gender', numeric: true, disablePadding: false, label: 'Gender' },
-  { id: 'ip_address', numeric: true, disablePadding: false, label: 'IP' },
-  { id: 'active', numeric: true, disablePadding: false, label: 'Active' },
-  { id: 'last_session', numeric: true, disablePadding: false, label: 'Last session' },
-];
 
 function getComparator(order, orderBy) {
   return order === 'desc'
@@ -65,67 +57,6 @@ function stableSort(array, comparator) {
     return a[1] - b[1];
   });
   return stabilizedThis.map(el => el[0]);
-}
-
-/*
-function Row() {
-  return (
-    data.map(item =>
-      <tr>
-        <td>{item.id}</td>
-        <td>{item.first_name+' '+item.last_name}</td>
-        <td>{item.email}</td>
-        <td>{item.gender}</td>
-        <td>{item.ip_address}</td>
-        <td>{item.active}</td>
-        <td>{item.last_session}</td>
-      </tr>
-    )
-  )
-}*/
-
-
-function EnhancedTableHead(props) {
-  const { classes, onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } = props;
-  const createSortHandler = property => event => {
-    onRequestSort(event, property);
-  };
-
-  return (
-    <TableHead>
-      <TableRow>
-        {/* <TableCell padding="checkbox">
-          <Checkbox
-            indeterminate={numSelected > 0 && numSelected < rowCount}
-            checked={rowCount > 0 && numSelected === rowCount}
-            onChange={onSelectAllClick}
-            inputProps={{ 'aria-label': 'select all desserts' }}
-          />
-        </TableCell> */}
-        {headCells.map(headCell => (
-          <TableCell
-            key={headCell.id}
-            align={headCell.numeric ? 'right' : 'left'}
-            padding={headCell.disablePadding ? 'none' : 'default'}
-            sortDirection={orderBy === headCell.id ? order : false}
-          >
-            <TableSortLabel
-              active={orderBy === headCell.id}
-              direction={orderBy === headCell.id ? order : 'asc'}
-              onClick={createSortHandler(headCell.id)}
-            >
-              {headCell.label}
-              {/* {orderBy === headCell.id ? (
-                <span className={classes.visuallyHidden}>
-                  {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                </span>
-              ) : null} */}
-            </TableSortLabel>
-          </TableCell>
-        ))}
-      </TableRow>
-    </TableHead>
-  );
 }
 
 
