@@ -1,22 +1,20 @@
-import React, { useState } from 'react';
-import logo from './logo.svg';
+import React from 'react';
 import './App.css';
-import data from './data/mockaroo';
+import data from './data/mockaroo1000';
 import { makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Checkbox from '@material-ui/core/Checkbox';
-import TableSortLabel from '@material-ui/core/TableSortLabel';
+//import TableSortLabel from '@material-ui/core/TableSortLabel';
 import Paper from '@material-ui/core/Paper';
 import EnhancedTableHead from './components/EnhancedTableHead';
 import TextField from '@material-ui/core/TextField';
 import { handlerTableClick, handlerSearchInput, handlerDelBtn } from './actions/index';
 import { connect } from 'react-redux';
-import { FixedSizeList as List } from 'react-window';
+//import { FixedSizeList as List } from 'react-window';
 import DeleteIcon from '@material-ui/icons/Delete';
 import IconButton from '@material-ui/core/IconButton';
 
@@ -29,8 +27,8 @@ const useStyles = makeStyles({
 
 let newData = data.filter((item, index)=>{
   for (let key in item) {
-    if (String(item[key]).includes(String(localStorage.getItem('filter')))==true) return item;
-  }
+    if (String(item[key]).includes(String(localStorage.getItem('filter')))===true) return item;
+  } return false;
 });
 
 function getComparator(order, orderBy) {
@@ -74,9 +72,9 @@ function filter(event) {
   //console.log(event.target.value);
   newData = data.filter((item, index)=>{
     for (let key in item) {
-      if (String(item[key]).includes(String(event.target.value))==true) return item;
+      if (String(item[key]).includes(String(event.target.value))===true) return item;
     }
-    
+    return false  ;
   })
   console.log(newData);
   return event.target.value;
@@ -86,7 +84,8 @@ function delSelected(selectedItems) {
   
     //console.log(item);
     newData=newData.filter((item,index)=>{
-      if (!selectedItems.includes(index)) return item;
+      if (!selectedItems.includes(item.id)) return item;
+      return false;
     })
 }
 
@@ -142,12 +141,12 @@ function App(props) {
           
           {
             stableSort(newData, getComparator(order, orderBy)).map((row, index) => {
-              const isItemSelected = isSelected(index);
+              const isItemSelected = isSelected(row.id);
               const labelId = `enhanced-table-checkbox-${index}`;
               return (
                   <TableRow
                   hover
-                  onClick={()=>props.onClick(index)}
+                  onClick={()=>props.onClick(row.id)}
                   role="checkbox"
                   aria-checked={isItemSelected}
                   tabIndex={-1}
