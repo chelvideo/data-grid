@@ -13,7 +13,7 @@ import Checkbox from '@material-ui/core/Checkbox';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
 import Paper from '@material-ui/core/Paper';
 import EnhancedTableHead from './components/EnhancedTableHead';
-import { handlerReqSort } from './actions/index';
+import { handlerTableClick } from './actions/index';
 import { connect } from 'react-redux';
 
 const useStyles = makeStyles({
@@ -22,7 +22,6 @@ const useStyles = makeStyles({
     margin: '0 auto',
   },
 });
-
 
 function getComparator(order, orderBy) {
   return order === 'desc'
@@ -65,16 +64,6 @@ function stableSort(array, comparator) {
 function App(props) {
   let { order, orderBy, selected } = props;
   const classes = useStyles();
-  //const [order, setOrder] = React.useState('asc');
-  //const [orderBy, setOrderBy] = React.useState('id');
-  //orderBy = {orderBy};
-  //const [selected, setSelected] = React.useState([]);
-
-  const handleRequestSort = (event, property) => {
-    const isAsc = orderBy === property && order === 'asc';
-    //setOrder(isAsc ? 'desc' : 'asc');
-    //setOrderBy(property);
-  };
 
   // const handleSelectAllClick = event => {
   //   if (event.target.checked) {
@@ -84,26 +73,6 @@ function App(props) {
   //   }
   //   setSelected([]);
   // };
-
-  const handleClick = (event, name) => {
-    const selectedIndex = selected.indexOf(name);
-    let newSelected = [];
-
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, name);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1),
-      );
-    }
-
-    [selected]=[newSelected];
-  };
 
   const isSelected = name => selected.indexOf(name) !== -1;
 
@@ -115,14 +84,14 @@ function App(props) {
       <Table className={classes.table} size="small" aria-label="a dense table">
         <EnhancedTableHead
           classes={classes}
-          numSelected={selected.length}
-          order={order}
-          orderBy={orderBy}
+          //numSelected={selected.length}
+          //order={order}
+          //orderBy={orderBy}
           // onSelectAllClick={handleSelectAllClick}
           //onRequestSort={props.store.dispatch(handlerReqSort('name'))}
-          onRequestSort={null}
+          //onRequestSort={null}
           //rStore={props.store}
-          rowCount={data.length}
+          //rowCount={data.length}
         />
 
         <TableBody>
@@ -135,7 +104,7 @@ function App(props) {
               return (
                 <TableRow
                   hover
-                  onClick={event => handleClick(event, row.id)}
+                  onClick={()=>props.onClick(row.id)}
                   role="checkbox"
                   aria-checked={isItemSelected}
                   tabIndex={-1}
@@ -181,4 +150,8 @@ function mapStateToProps (state) {
   }
 }
 
-export default connect(mapStateToProps)(App);
+const mapDispatchToProps = {
+  onClick: handlerTableClick
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);

@@ -20,62 +20,54 @@ const headCells = [
 ];
 
 function EnhancedTableHead(props) {
-    const { classes, onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort, rStore, onClick } = props;
-    // const createSortHandler = property => event => {
-    //   onRequestSort(event, property);
-    // };
+  const { classes, onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort, rStore, onClick } = props;
   
-    return (
-      <TableHead>
-        <TableRow>
-          {/* <TableCell padding="checkbox">
-            <Checkbox
-              indeterminate={numSelected > 0 && numSelected < rowCount}
-              checked={rowCount > 0 && numSelected === rowCount}
-              onChange={onSelectAllClick}
-              inputProps={{ 'aria-label': 'select all desserts' }}
-            />
-          </TableCell> */}
-          {headCells.map(headCell => (
-            <TableCell
-              key={headCell.id}
-              align={headCell.numeric ? 'right' : 'left'}
-              padding={headCell.disablePadding ? 'none' : 'default'}
-              sortDirection={orderBy === headCell.id ? order : false}
-              //onClick={handlerReqSort('email')}
+  return (
+    <TableHead>
+      <TableRow>
+        {/* <TableCell padding="checkbox">
+          <Checkbox
+            indeterminate={numSelected > 0 && numSelected < rowCount}
+            checked={rowCount > 0 && numSelected === rowCount}
+            onChange={onSelectAllClick}
+            inputProps={{ 'aria-label': 'select all desserts' }}
+          />
+        </TableCell> */}
+        {headCells.map(headCell => (
+          <TableCell
+            key={headCell.id}
+            align={headCell.numeric ? 'right' : 'left'}
+            padding={headCell.disablePadding ? 'none' : 'default'}
+            sortDirection={orderBy === headCell.id ? order : false}
+          >
+            <TableSortLabel
+              active={orderBy === headCell.id}
+              direction={orderBy === headCell.id ? order : 'asc'}
+              onClick={()=>props.onClick(headCell.id)}
             >
-              <TableSortLabel
-                active={orderBy === headCell.id}
-                direction={orderBy === headCell.id ? order : 'asc'}
-                onClick={(e,p)=> {console.log(e);console.log(p);
-                  
-                  props.onClick(headCell.id)}}
-                //onClick={()=>console.log('click done')}
-              >
-                {headCell.label}
-                {/* {orderBy === headCell.id ? (
-                  <span className={classes.visuallyHidden}>
-                    {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                  </span>
-                ) : null} */}
-              </TableSortLabel>
-            </TableCell>
-          ))}
-        </TableRow>
-      </TableHead>
-    );
-  }
+              {headCell.label}
+              {/* {orderBy === headCell.id ? (
+                <span className={classes.visuallyHidden}>
+                  {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
+                </span>
+              ) : null} */}
+            </TableSortLabel>
+          </TableCell>
+        ))}
+      </TableRow>
+    </TableHead>
+  );
+}
 
-  const mapStateToProps = function(state) {
-    console.log({orderBy: state.orderBy});
-    return {
-      order: state.order,
-      orderBy: state.orderBy
-    }
+const mapStateToProps = function(state) {
+  return {
+    order: state.order,
+    orderBy: state.orderBy
   }
+}
 
-  const mapDispatchToProps = {
-      onClick: handlerReqSort
-  }
+const mapDispatchToProps = {
+    onClick: handlerReqSort
+}
 
-  export default connect(mapStateToProps, mapDispatchToProps)(EnhancedTableHead);
+export default connect(mapStateToProps, mapDispatchToProps)(EnhancedTableHead);
