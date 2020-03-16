@@ -1,4 +1,5 @@
 import React from 'react';
+import { connect } from 'react-redux'
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -6,6 +7,7 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
+import { handlerReqSort } from '../actions';
 
 const headCells = [
   { id: 'id', numeric: false, disablePadding: true, label: 'ID' },
@@ -18,10 +20,10 @@ const headCells = [
 ];
 
 function EnhancedTableHead(props) {
-    const { classes, onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } = props;
-    const createSortHandler = property => event => {
-      onRequestSort(event, property);
-    };
+    const { classes, onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort, rStore, onClick } = props;
+    // const createSortHandler = property => event => {
+    //   onRequestSort(event, property);
+    // };
   
     return (
       <TableHead>
@@ -40,11 +42,15 @@ function EnhancedTableHead(props) {
               align={headCell.numeric ? 'right' : 'left'}
               padding={headCell.disablePadding ? 'none' : 'default'}
               sortDirection={orderBy === headCell.id ? order : false}
+              //onClick={handlerReqSort('email')}
             >
               <TableSortLabel
                 active={orderBy === headCell.id}
                 direction={orderBy === headCell.id ? order : 'asc'}
-                onClick={createSortHandler(headCell.id)}
+                onClick={(e,p)=> {console.log(e);console.log(p);
+                  
+                  props.onClick(headCell.id)}}
+                //onClick={()=>console.log('click done')}
               >
                 {headCell.label}
                 {/* {orderBy === headCell.id ? (
@@ -60,4 +66,16 @@ function EnhancedTableHead(props) {
     );
   }
 
-  export default EnhancedTableHead;
+  const mapStateToProps = function(state) {
+    console.log({orderBy: state.orderBy});
+    return {
+      order: state.order,
+      orderBy: state.orderBy
+    }
+  }
+
+  const mapDispatchToProps = {
+      onClick: handlerReqSort
+  }
+
+  export default connect(mapStateToProps, mapDispatchToProps)(EnhancedTableHead);

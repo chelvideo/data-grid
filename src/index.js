@@ -8,8 +8,13 @@ import EnhancedTable from './tmp';
 import * as serviceWorker from './serviceWorker';
 import reducer from './store/reducers'
 
+const initialState = {
+    order: 'asc',
+    orderBy: 'id',
+    selected: []
+}
 
-const store = createStore(reducer);
+const store = createStore(reducer, initialState, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
 
 ReactDOM.render(
     <Provider store={store}>

@@ -13,6 +13,8 @@ import Checkbox from '@material-ui/core/Checkbox';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
 import Paper from '@material-ui/core/Paper';
 import EnhancedTableHead from './components/EnhancedTableHead';
+import { handlerReqSort } from './actions/index';
+import { connect } from 'react-redux';
 
 const useStyles = makeStyles({
   table: {
@@ -60,16 +62,18 @@ function stableSort(array, comparator) {
 }
 
 
-function App() {
+function App(props) {
+  let { order, orderBy, selected } = props;
   const classes = useStyles();
-  const [order, setOrder] = React.useState('asc');
-  const [orderBy, setOrderBy] = React.useState('id');
-  const [selected, setSelected] = React.useState([]);
+  //const [order, setOrder] = React.useState('asc');
+  //const [orderBy, setOrderBy] = React.useState('id');
+  //orderBy = {orderBy};
+  //const [selected, setSelected] = React.useState([]);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
-    setOrder(isAsc ? 'desc' : 'asc');
-    setOrderBy(property);
+    //setOrder(isAsc ? 'desc' : 'asc');
+    //setOrderBy(property);
   };
 
   // const handleSelectAllClick = event => {
@@ -98,7 +102,7 @@ function App() {
       );
     }
 
-    setSelected(newSelected);
+    [selected]=[newSelected];
   };
 
   const isSelected = name => selected.indexOf(name) !== -1;
@@ -115,7 +119,9 @@ function App() {
           order={order}
           orderBy={orderBy}
           // onSelectAllClick={handleSelectAllClick}
-          onRequestSort={handleRequestSort}
+          //onRequestSort={props.store.dispatch(handlerReqSort('name'))}
+          onRequestSort={null}
+          //rStore={props.store}
           rowCount={data.length}
         />
 
@@ -167,4 +173,12 @@ function App() {
   );
 }
 
-export default App;
+function mapStateToProps (state) {
+  return {
+    order: state.order,
+    orderBy: state.orderBy,
+    selected: state.selected
+  }
+}
+
+export default connect(mapStateToProps)(App);
