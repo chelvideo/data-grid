@@ -14,8 +14,11 @@ import TableSortLabel from '@material-ui/core/TableSortLabel';
 import Paper from '@material-ui/core/Paper';
 import EnhancedTableHead from './components/EnhancedTableHead';
 import TextField from '@material-ui/core/TextField';
-import { handlerTableClick, handlerSearchInput } from './actions/index';
+import { handlerTableClick, handlerSearchInput, handlerDelBtn } from './actions/index';
 import { connect } from 'react-redux';
+import { FixedSizeList as List } from 'react-window';
+import DeleteIcon from '@material-ui/icons/Delete';
+import IconButton from '@material-ui/core/IconButton';
 
 const useStyles = makeStyles({
   table: {
@@ -24,7 +27,11 @@ const useStyles = makeStyles({
   },
 });
 
-let newData=data.map(item=>item);
+let newData = data.filter((item, index)=>{
+  for (let key in item) {
+    if (String(item[key]).includes(String(localStorage.getItem('filter')))==true) return item;
+  }
+});
 
 function getComparator(order, orderBy) {
   return order === 'desc'
@@ -75,6 +82,15 @@ function filter(event) {
   return event.target.value;
 }
 
+function delSelected(selectedItems) {
+  
+    //console.log(item);
+    newData=newData.filter((item,index)=>{
+      if (!selectedItems.includes(index)) return item;
+    })
+}
+
+
 function App(props) {
   let { order, orderBy, selected } = props;
   const classes = useStyles();
@@ -93,9 +109,19 @@ function App(props) {
 
   return (
     <div className="App">
-      <TextField id="standard-basic" label="Search" 
-        onChange={(event)=>props.onChange(filter(event))}
-      />
+      <div className="header">
+        <IconButton 
+          aria-label="delete" 
+          className={classes.margin}
+          onClick={()=>props.onClickDel(delSelected(selected))}
+        >
+          <DeleteIcon />
+        </IconButton>
+
+        <TextField id="searchInput" label="Search" 
+          onInput={(event)=>props.onChange(filter(event))}
+        />
+      </div>
 
       <TableContainer component={Paper}>
       <Table className={classes.table} size="small">
@@ -112,16 +138,16 @@ function App(props) {
         />
 
         <TableBody>
-          {stableSort(newData, getComparator(order, orderBy))
-            //.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-            .map((row, index) => {
-              const isItemSelected = isSelected(row.id);
-              const labelId = `enhanced-table-checkbox-${index}`;
 
+          
+          {
+            stableSort(newData, getComparator(order, orderBy)).map((row, index) => {
+              const isItemSelected = isSelected(index);
+              const labelId = `enhanced-table-checkbox-${index}`;
               return (
-                <TableRow
+                  <TableRow
                   hover
-                  onClick={()=>props.onClick(row.id)}
+                  onClick={()=>props.onClick(index)}
                   role="checkbox"
                   aria-checked={isItemSelected}
                   tabIndex={-1}
@@ -143,12 +169,14 @@ function App(props) {
                   <TableCell align="right">{new Date(row.last_session).toLocaleString()}</TableCell>
                 </TableRow>
               );
-            })}
+            })
+          }
           {/* {emptyRows > 0 && (
             <TableRow style={{ height: (dense ? 33 : 53) * emptyRows }}>
               <TableCell colSpan={6} />
             </TableRow>
           )} */}
+          
         </TableBody>
 
         
@@ -170,7 +198,8 @@ function mapStateToProps (state) {
 
 const mapDispatchToProps = {
   onClick: handlerTableClick,
-  onChange: handlerSearchInput
+  onChange: handlerSearchInput,
+  onClickDel: handlerDelBtn
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);
