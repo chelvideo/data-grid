@@ -2,6 +2,7 @@
 function reducer(state, action) {
 
     switch (action.type) {
+
         case 'CLICK_HEAD_CELL':
           const isAsc = state.orderBy === action.orderBy && state.order === 'asc';
 
@@ -9,6 +10,7 @@ function reducer(state, action) {
             order: isAsc ? 'desc' : 'asc', 
             orderBy: action.orderBy
           });
+
 
         case 'CLICK_TABLE_ROW':
           const selectedIndex = state.selected.indexOf(action.rowId);
@@ -30,6 +32,13 @@ function reducer(state, action) {
             selected: newSelected
           });
 
+        
+        case 'FILTER_DATA':
+          return Object.assign({}, state, {
+            filter: action.str
+          });
+
+          
         default:
           return state;
       }

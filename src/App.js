@@ -13,7 +13,8 @@ import Checkbox from '@material-ui/core/Checkbox';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
 import Paper from '@material-ui/core/Paper';
 import EnhancedTableHead from './components/EnhancedTableHead';
-import { handlerTableClick } from './actions/index';
+import TextField from '@material-ui/core/TextField';
+import { handlerTableClick, handlerSearchInput } from './actions/index';
 import { connect } from 'react-redux';
 
 const useStyles = makeStyles({
@@ -22,6 +23,8 @@ const useStyles = makeStyles({
     margin: '0 auto',
   },
 });
+
+let newData=data.map(item=>item);
 
 function getComparator(order, orderBy) {
   return order === 'desc'
@@ -60,6 +63,17 @@ function stableSort(array, comparator) {
   return stabilizedThis.map(el => el[0]);
 }
 
+function filter(event) {
+  //console.log(event.target.value);
+  newData = data.filter((item, index)=>{
+    for (let key in item) {
+      if (String(item[key]).includes(String(event.target.value))==true) return item;
+    }
+    
+  })
+  console.log(newData);
+  return event.target.value;
+}
 
 function App(props) {
   let { order, orderBy, selected } = props;
@@ -79,9 +93,12 @@ function App(props) {
 
   return (
     <div className="App">
+      <TextField id="standard-basic" label="Search" 
+        onChange={(event)=>props.onChange(filter(event))}
+      />
 
       <TableContainer component={Paper}>
-      <Table className={classes.table} size="small" aria-label="a dense table">
+      <Table className={classes.table} size="small">
         <EnhancedTableHead
           classes={classes}
           //numSelected={selected.length}
@@ -95,7 +112,7 @@ function App(props) {
         />
 
         <TableBody>
-          {stableSort(data, getComparator(order, orderBy))
+          {stableSort(newData, getComparator(order, orderBy))
             //.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
             .map((row, index) => {
               const isItemSelected = isSelected(row.id);
@@ -146,12 +163,14 @@ function mapStateToProps (state) {
   return {
     order: state.order,
     orderBy: state.orderBy,
-    selected: state.selected
+    selected: state.selected,
+    filter: state.filter
   }
 }
 
 const mapDispatchToProps = {
-  onClick: handlerTableClick
+  onClick: handlerTableClick,
+  onChange: handlerSearchInput
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);

@@ -11,12 +11,12 @@ import { handlerReqSort } from '../actions';
 
 const headCells = [
   { id: 'id', numeric: false, disablePadding: true, label: 'ID' },
-  { id: 'name', numeric: true, disablePadding: false, label: 'Name' },
-  { id: 'email', numeric: true, disablePadding: false, label: 'Email' },
-  { id: 'gender', numeric: true, disablePadding: false, label: 'Gender' },
-  { id: 'ip_address', numeric: true, disablePadding: false, label: 'IP' },
-  { id: 'active', numeric: true, disablePadding: false, label: 'Active' },
-  { id: 'last_session', numeric: true, disablePadding: false, label: 'Last session' },
+  { id: 'name', numeric: false, disablePadding: false, label: 'Name' },
+  { id: 'email', numeric: false, disablePadding: false, label: 'Email' },
+  { id: 'gender', numeric: false, disablePadding: false, label: 'Gender' },
+  { id: 'ip_address', numeric: false, disablePadding: false, label: 'IP' },
+  { id: 'active', numeric: false, disablePadding: false, label: 'Active' },
+  { id: 'last_session', numeric: false, disablePadding: false, label: 'Last session' },
 ];
 
 function EnhancedTableHead(props) {
@@ -25,18 +25,18 @@ function EnhancedTableHead(props) {
   return (
     <TableHead>
       <TableRow>
-        {/* <TableCell padding="checkbox">
-          <Checkbox
+         <TableCell padding="checkbox">
+          {/*<Checkbox
             indeterminate={numSelected > 0 && numSelected < rowCount}
             checked={rowCount > 0 && numSelected === rowCount}
             onChange={onSelectAllClick}
             inputProps={{ 'aria-label': 'select all desserts' }}
-          />
-        </TableCell> */}
+          />*/}
+        </TableCell> 
         {headCells.map(headCell => (
           <TableCell
             key={headCell.id}
-            align={headCell.numeric ? 'right' : 'left'}
+            align={headCell.numeric ? 'right' : 'center'}
             padding={headCell.disablePadding ? 'none' : 'default'}
             sortDirection={orderBy === headCell.id ? order : false}
           >
